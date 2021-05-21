@@ -1,10 +1,8 @@
 package com.cbellmont.ejemploandroid8
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import androidx.appcompat.app.AppCompatActivity
 import com.cbellmont.ejemploandroid8.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -13,40 +11,33 @@ class MainActivity : AppCompatActivity() {
         const val TAG = "Hola"
     }
 
-    lateinit var binding : ActivityMainBinding
+    private lateinit var binding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        cargarPreferencias()?.let { binding.editText.setText(it) }
-
-        binding.editText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                guardarPreferencias(s.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
-
+        cargarPreferencias()?.let {
+            binding.editText.setText(it)
+        }
     }
 
+    override fun onStop() {
+        guardarPreferencias(binding.editText.toString())
+        super.onStop()
+    }
 
     private fun cargarPreferencias() : String? {
         val sharedPref = getPreferences(Context.MODE_PRIVATE)
-        return sharedPref.getString(TAG, "")
+        return sharedPref.getString("hola", "")
     }
 
     private fun guardarPreferencias(string : String) {
         val sharedPref = getPreferences(Context.MODE_PRIVATE)
         /* Lo de abajo es una manera más elegante de poner esto mismo.
         var sharedPrefEditable = sharedPref.edit()
-        sharedPrefEditable.putString("NOMBRE", "asdfasdf")
+        sharedPrefEditable.putString("NOMBRE", "valor guardado")
         sharedPrefEditable.commit() */
 
         with (sharedPref.edit()) {
